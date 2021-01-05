@@ -1,0 +1,4 @@
+.vscode/
+Extension/
+.env
+*.log
