@@ -1,0 +1,12 @@
+beautifulsoup4==4.9.3
+bs4==0.0.1
+colorama==0.4.4
+commonmark==0.9.1
+Pygments==2.7.3
+python-dotenv==0.15.0
+rich==9.6.1
+schedule==0.6.0
+selenium==3.141.0
+soupsieve==2.1
+typing-extensions==3.7.4.3
+urllib3==1.26.2
