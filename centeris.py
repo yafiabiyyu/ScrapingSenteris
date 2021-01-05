@@ -14,8 +14,18 @@ load_dotenv()
 
 
 class CenterisScraping:
+    def clear(self): 
+        if name == 'nt': 
+            _ = system('cls') 
+        else: 
+            _ = system('clear') 
+
     def BrowserSetup(self):
-        browser = webdriver.Chrome("Extension/chromedriver")
+        options = webdriver.ChromeOptions()
+        options.add_argument("headless")
+        browser = webdriver.Chrome(
+            "Extension/chromedriver", options=options
+        )
         browser.maximize_window()
         return browser
 
@@ -31,6 +41,39 @@ class CenterisScraping:
             )
         )
         return keyword_list
+
+    def SaveData(self, data, keyword_name):
+        with open(
+            "Storage/{}.json".format(keyword_name),
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(
+            "New File Add : [bold green]{}.json[/bold green]".format(
+                keyword_name
+            )
+        )
+
+    def UpdateData(self, data, keyword):
+        load_data = open("Storage/{}.json".format(keyword))
+        old_data = json.load(load_data)
+        tmp_new_data = []
+        for i in range(len(data)):
+            if data[i] in old_data:
+                pass
+            else:
+                print(
+                    "New Listing : [bold white]{}[/bold white]".format(
+                        data[i]
+                    )
+                )
+                tmp_new_data.append(data[i])
+        latest_data = old_data + tmp_new_data
+        with open(
+            "Storage/{}.json".format(keyword), "w", encoding="utf-8"
+        ) as f:
+            json.dump(latest_data, f, ensure_ascii=False, indent=4)
 
     def ConsultHandle(self, browser):
         keyword_list = self.ConfigSearch()
@@ -75,7 +118,12 @@ class CenterisScraping:
                     "/html/body/main/div[7]/div/div/div[1]/div/div/ul/li[4]/a"
                 ).click()
             clean_data = list(set(raw_data))
-            print(clean_data)
+            if path.isfile("Storage/{}.json".format(keyword_name)):
+                print("[bold blue]Update File[/bold blue]")
+                self.UpdateData(clean_data, keyword_name)
+            else:
+                print("[bold red]Add New File[/bold red]")
+                self.SaveData(clean_data, keyword)
             browser.implicitly_wait(5)
             sleep(3)
             browser.quit()
@@ -108,6 +156,7 @@ class CenterisScraping:
         schedule.every(1).minutes.do(self.LoginHandle)
         while True:
             try:
+                self.clear()
                 schedule.run_pending()
                 sleep(2)
             except KeyboardInterrupt:
