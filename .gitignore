@@ -2,3 +2,4 @@
 Extension/
 .env
 *.log
+backup.py
